@@ -10,5 +10,5 @@ private:
 
 public:
     curve(const std::vector<Point2>& points) : points(points) {}
-    bool withinFrechetDistance(const curve& rhs, double ro);
+    std::vector<std::vector<bool>> withinFrechetDistance(const curve& rhs, double ro);
 };
