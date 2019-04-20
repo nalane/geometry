@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "curve.hpp"
 
 using namespace std;
@@ -14,4 +16,10 @@ vector<vector<bool>> curve::withinFrechetDistance(const curve& rhs, double ro) {
         }
     }
     return arr;
+}
+
+void curve::print() {
+    for (Point2 p : points) {
+        cout << p << "\n";
+    }
 }
