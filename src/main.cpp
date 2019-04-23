@@ -245,6 +245,13 @@ int main(int argc, char** argv) {
     }
 
     vector<curve> curves = get_curves(argv[1]);
+
+    // Step 1.5: Get query curve
+    // Step 2: free space: map<curve, matrix>
+    // Step 3: kernel -> trait_2
+    // Step 4: get column set
+    // Step 5: Filter
+
     for (curve c : curves) {
         c.print();
     }
