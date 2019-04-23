@@ -1,16 +1,15 @@
-#include <vector>
-#include <CGAL/Simple_cartesian.h>
+#pragma once
 
-typedef CGAL::Simple_cartesian<double> MyKernel;
-typedef MyKernel::Point_2 Point2;
+#include <vector>
+#include "cgal.hpp"
 
 class curve {
 private:    
-    std::vector<Point2> points;
+    std::vector<Double_Point_2> points;
 
 public:
-    curve(const std::vector<Point2>& points) : points(points) {}
-    std::vector<std::vector<bool>> withinFrechetDistance(const curve& rhs, double ro);
+    curve(const std::vector<Double_Point_2>& points) : points(points) {}
+    std::vector<std::vector<bool>> free_space_matrix(const curve& q, double ro);
 
     void print();
 };
