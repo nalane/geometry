@@ -1,8 +1,8 @@
 #include <vector>
 #include <CGAL/Simple_cartesian.h>
 
-typedef CGAL::Simple_cartesian<double> Kernel;
-typedef Kernel::Point_2 Point2;
+typedef CGAL::Simple_cartesian<double> MyKernel;
+typedef MyKernel::Point_2 Point2;
 
 class curve {
 private:    

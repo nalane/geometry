@@ -1,13 +1,12 @@
 #include <iostream>
 #include <set>
-#include <math.h>       /* pow */
+#include <math.h>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <math.h>
 #include <cmath>
 #include <CGAL/Simple_cartesian.h>
-#include "curve.hpp"
 #include <CGAL/Cartesian.h>
 #include <CGAL/MP_Float.h>
 #include <CGAL/Exact_rational.h>
@@ -15,6 +14,8 @@
 #include <CGAL/Arr_circle_segment_traits_2.h>
 #include <CGAL/Arrangement_2.h>
 #include <CGAL/Arr_naive_point_location.h>
+
+#include "curve.hpp"
 
 typedef CGAL::Cartesian<CGAL::Exact_rational>         Kernel;
 typedef CGAL::Arr_circle_segment_traits_2<Kernel>     Traits_2;
@@ -25,6 +26,8 @@ typedef Kernel::Circle_2 Circle_2;
 typedef Traits_2::Curve_2 Curve_2;
 typedef CGAL::Arrangement_2<Traits_2> Arrangement_2;
 typedef CGAL::Arr_naive_point_location<Arrangement_2> Naive_pl;
+
+using namespace std;
 
 void arrangement_creatation(std::vector<Point_2> query_curve, double radius);
 /**
