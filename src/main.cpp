@@ -45,66 +45,75 @@ void print_column_set(std::set<std::vector<bool>> set){
 
 void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
 
-    Arrangement_2 arr;
+  Arrangement_2 arr;
 
-    std::set<std::vector<bool>> column_set;
+  std::set<std::vector<bool>> column_set;
 
-    // insert all circles which are centered at each point of query_curve.
-    CGAL::Exact_rational sqr_r = CGAL::Exact_rational(pow(radius, 2));
-    for(unsigned i = 0; i < query_curve.size(); i ++){
+  // insert all circles which are centered at each point of query_curve.
+  CGAL::Exact_rational sqr_r = CGAL::Exact_rational(pow(radius, 2));
+  for(unsigned i = 0; i < query_curve.size(); i ++){
 
-        Circle_2 circ = Circle_2(Double_Point_2(CGAL::to_double(query_curve[i].x()), CGAL::to_double(query_curve[i].y())), sqr_r, CGAL::CLOCKWISE);
-        Curve_2 cv = Curve_2(circ);
-        insert(arr, cv);
-    }
+    Circle_2 circ = Circle_2(Double_Point_2(CGAL::to_double(query_curve[i].x()), CGAL::to_double(query_curve[i].y())), sqr_r, CGAL::CLOCKWISE);
+    Curve_2 cv = Curve_2(circ);
+    insert(arr, cv);
+  }
 
-    Naive_pl naive_pl(arr);
-    // face to column
-    Arrangement_2::Face_const_iterator fit;
-    for (fit = arr.faces_begin(); fit != arr.faces_end(); ++fit){
-        if (fit -> is_unbounded() == false){
-            std::vector<Trait_Point_2> face_point_vector;
-            Arrangement_2::Ccb_halfedge_const_circulator  circ = fit->outer_ccb();
-            Arrangement_2::Ccb_halfedge_const_circulator  curr = circ;
-            Arrangement_2::Halfedge_const_handle          he;
+  Naive_pl naive_pl(arr);
+  // face to column
+  Arrangement_2::Face_const_iterator fit;
+  for (fit = arr.faces_begin(); fit != arr.faces_end(); ++fit){
+    if (fit -> is_unbounded() == false){
+      std::vector<Trait_Point_2> face_point_vector;
+      Arrangement_2::Ccb_halfedge_const_circulator  circ = fit->outer_ccb();
+      Arrangement_2::Ccb_halfedge_const_circulator  curr = circ;
+      Arrangement_2::Halfedge_const_handle          he;
 
-            face_point_vector.push_back(curr->source()->point());
-            do
-            {
-                he = curr;
-                face_point_vector.push_back(he->target()->point());
-                ++curr;
-            } while (curr != circ);
+      face_point_vector.push_back(curr->source()->point());
+      do
+      {
+        he = curr;
+        face_point_vector.push_back(he->target()->point());
+        ++curr;
+      } while (curr != circ);
 
-            // find the point inside the face.
-            // 1. find the first and the mid point in the vector.
-            Trait_Point_2 left = face_point_vector[0];
-            int mid = (face_point_vector.size() - 1)/2;
-            Trait_Point_2 right = face_point_vector[mid];
-            //std::cout<<mid << "    mid  "<<std::endl;
-
-            // 2.
-            bool inside = false;
-            do{
-                Trait_Point_2 mid_point = mid_point_creatation(left, right);
-                //std::cout << "left:   " << left << std::endl;
-                //std::cout << "right:   " << right << std::endl;
-                //std::cout << "mid_point:   " << mid_point << std::endl;
-                CGAL::Arr_point_location_result<Arrangement_2>::Type obj = naive_pl.locate(mid_point);
-                Arrangement_2::Face_const_handle* f;
-                if (f = boost::get<Arrangement_2::Face_const_handle>(&obj)){// determine inside a face
-                    if(fit == *f){
-                        std::cout<<"   true  " << std::endl;
-                        inside = true;
-                    }
-                }
-                left = mid_point;
-            } while(inside == false);
-            std::vector<bool> column;
-            column = column_creation(query_curve, left, radius);
-            column_set.insert(column);
+      // 2.
+      bool inside = false;
+      int index_one = 0;
+      int index_two = 1;
+      int vector_length = face_point_vector.size() - 1;
+      Trait_Point_2 mid_point;
+      while(inside == false){
+        Trait_Point_2 left = face_point_vector[index_one];
+        Trait_Point_2 right = face_point_vector[index_two];
+        mid_point = mid_point_creatation(left, right);
+                
+        CGAL::Arr_point_location_result<Arrangement_2>::Type obj = naive_pl.locate(mid_point);
+        Arrangement_2::Face_const_handle* f;
+        if (f = boost::get<Arrangement_2::Face_const_handle>(&obj)){
+          if(fit == *f){
+            // std::cout<<"   true  " << std::endl;
+            inside = true;
+          }
         }
+        index_two += 1;
+        if (index_two = vector_length){
+          index_one += 1;
+          index_two = index_one + 1;
+        }
+        if (index_one == vector_length){
+          std::cout<< "big error!!!!!!"<<std::endl;
+          return;
+        }
+                
+      }
+            
+      std::vector<bool> column;
+      column = column_creation(query_curve, mid_point, radius);
+      column_set.insert(column);
+
     }
+  }
+    
     print_column_set(column_set);
     // print arrangement.
     // print_arrangement (arr);
