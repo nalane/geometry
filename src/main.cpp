@@ -1,33 +1,14 @@
 #include <iostream>
 #include <set>
-#include <math.h>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <math.h>
 #include <cmath>
 
 #include "curve.hpp"
 #include "cgal.hpp"
 
 using namespace std;
-
-/**
-int main()
-{
-    double radius = 0.5;
-    std::vector<Trait_Point_2> query_curve;
-    
-    query_curve.push_back(Trait_Point_2(1, 2));
-    query_curve.push_back(Trait_Point_2(2, 3));
-    query_curve.push_back(Trait_Point_2(3, 2));
-    query_curve.push_back(Trait_Point_2(4, 3));
-
-    
-    arrangement_creatation(query_curve, radius);
-    
-}
-**/
 
 std::vector<bool> column_creation(std::vector<Trait_Point_2> query_curve, Trait_Point_2 p, double radius){
     std::vector<bool> column;
@@ -130,55 +111,6 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
     
 }
 
-
-void convert(string filepath) {
-    ifstream myfile (filepath.c_str());
-    vector<Double_Point_2> p;
-
-    if(myfile.is_open())
-    {
-        string header;
-        getline(myfile, header);
-
-        double x, y;
-        int pointIndex, curveIndex;
-        while(myfile >> x >> y >> pointIndex >> curveIndex)
-        {
-            double mapWidth = 600;
-            double mapHeight = 800;
-
-            double x_mapped, y_mapped;
-            double latRad, mercN;
-
-            //get x value
-            //x_mapped = (x+180)*(mapWidth/360);
-            x_mapped = fmod(mapWidth*(x+180)/360, (mapWidth+(mapWidth)/2));
-
-            //convert from degree to radians
-            latRad = y*M_PI/180;
-
-            //get y
-            mercN = log(tan(M_PI/4)+(latRad/2));
-            y_mapped = (mapHeight/2)-(mapWidth*mercN/(2*M_PI));
-
-
-            //cout << x << " " << y << endl;
-            //p.push_back(Double_Point_2(x,y));
-            p.push_back(Double_Point_2(x_mapped, y_mapped));
-        }
-        myfile.close();
-    }
-
-    //turn off scientific notation
-    cout.setf(ios::fixed, ios::floatfield);
-    cout.setf(ios::showpoint);
-    cout.precision(3);
-
-    for(auto point : p){
-        cout << point << endl;
-    }
-}
-
 std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curves){
     std::vector<std::vector<Trait_Point_2>> result;
     for(unsigned i = 0; i < curves.size(); i++){
@@ -235,8 +167,14 @@ vector<curve> get_curves(string filename) {
 
 int main(int argc, char** argv) {
     string datafile = "../data/dataset.txt";
-    if (argc == 2) {
-        datafile = argv[1];
+    int queryIndex = 0;
+    if (argc > 1) {
+        for (int i = 1; i < argc; i++) {
+            if (strcmp(argv[i], "-d") == 0)
+                datafile = argv[++i];
+            else if (strcmp(argv[i], "-q") == 0)
+                queryIndex = atoi(argv[++i]);
+        }
     }
 
     vector<curve> curves = get_curves(datafile);
