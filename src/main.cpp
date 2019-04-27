@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <map>
 
 #include "curve.hpp"
 #include "cgal.hpp"
@@ -132,7 +133,7 @@ std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curve
     return result;
 }
 
-vector<curve> get_curves(string filename) {
+map<size_t, curve> get_curves(string filename) {
     // Get the directory from the filename
     string directory = "";
     size_t slash_index = filename.rfind('/');
@@ -140,7 +141,7 @@ vector<curve> get_curves(string filename) {
         directory = filename.substr(0, slash_index + 1);
     }
 
-    vector<curve> curves;
+    map<size_t, curve> curves;
 
     ifstream dataset(filename.c_str());
     if (dataset.is_open()) {
@@ -148,7 +149,7 @@ vector<curve> get_curves(string filename) {
 
         while (dataset >> datafile) {
             double x, y;
-            int pointIndex, curveIndex;
+            size_t pointIndex, curveIndex;
             vector<Double_Point_2> points;
 
             // Make sure we are looking in the right directory for the data
@@ -162,10 +163,13 @@ vector<curve> get_curves(string filename) {
             // Get the coordinates in each line
             while (datain >> x >> y >> pointIndex >> curveIndex) {
                 points.push_back(Double_Point_2(x, y));
+                cout << points.back() << endl;
             }
 
+            cout << points.size();
+
             datain.close();
-            curves.push_back(curve(points));
+            curves[curveIndex] = curve(points);
         }
     }
 
@@ -185,17 +189,20 @@ int main(int argc, char** argv) {
         }
     }
 
-    vector<curve> curves = get_curves(datafile);
+    map<size_t, curve> curves = get_curves(datafile);
 
     // Step 1.5: Get query curve
+    curve q = curves[queryIndex];
+    curves.erase(queryIndex);
+
     // Step 2: free space: map<curve, matrix>
     // Step 3: kernel -> trait_2
     // Step 4: get column set
     // Step 5: Filter
 
-    for (curve c : curves) {
-        c.print();
-    }
+    //for (auto p : curves) {
+        //p.second.print();
+    //}
 
     return 0;
 }
