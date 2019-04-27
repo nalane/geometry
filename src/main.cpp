@@ -44,15 +44,15 @@ void print_column_set(std::set<std::vector<bool>> set){
 }
 
 void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
-    
+
     Arrangement_2 arr;
-    
+
     std::set<std::vector<bool>> column_set;
-    
+
     // insert all circles which are centered at each point of query_curve.
     CGAL::Exact_rational sqr_r = CGAL::Exact_rational(pow(radius, 2));
     for(unsigned i = 0; i < query_curve.size(); i ++){
-        
+
         Circle_2 circ = Circle_2(Double_Point_2(CGAL::to_double(query_curve[i].x()), CGAL::to_double(query_curve[i].y())), sqr_r, CGAL::CLOCKWISE);
         Curve_2 cv = Curve_2(circ);
         insert(arr, cv);
@@ -67,7 +67,7 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
             Arrangement_2::Ccb_halfedge_const_circulator  circ = fit->outer_ccb();
             Arrangement_2::Ccb_halfedge_const_circulator  curr = circ;
             Arrangement_2::Halfedge_const_handle          he;
-            
+
             face_point_vector.push_back(curr->source()->point());
             do
             {
@@ -75,14 +75,14 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
                 face_point_vector.push_back(he->target()->point());
                 ++curr;
             } while (curr != circ);
-         
+
             // find the point inside the face.
             // 1. find the first and the mid point in the vector.
             Trait_Point_2 left = face_point_vector[0];
             int mid = (face_point_vector.size() - 1)/2;
             Trait_Point_2 right = face_point_vector[mid];
             //std::cout<<mid << "    mid  "<<std::endl;
-            
+
             // 2.
             bool inside = false;
             do{
@@ -108,7 +108,6 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
     print_column_set(column_set);
     // print arrangement.
     // print_arrangement (arr);
-    
 }
 
 std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curves){
