@@ -129,16 +129,6 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
 
 }
 
-    //turn off scientific notation
-    cout.setf(ios::fixed, ios::floatfield);
-    cout.setf(ios::showpoint);
-    cout.precision(3);
-
-    for(auto point : p){
-        cout << point << endl;
-    }
-}
-
 std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curves){
     std::vector<std::vector<Trait_Point_2>> result;
     for(unsigned i = 0; i < curves.size(); i++){
