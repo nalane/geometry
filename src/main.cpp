@@ -4,7 +4,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <math.h>
 #include <cmath>
 
 #include "curve.hpp"
@@ -17,15 +16,15 @@ int main()
 {
     double radius = 0.5;
     std::vector<Trait_Point_2> query_curve;
-    
+
     query_curve.push_back(Trait_Point_2(1, 2));
     query_curve.push_back(Trait_Point_2(2, 3));
     query_curve.push_back(Trait_Point_2(3, 2));
     query_curve.push_back(Trait_Point_2(4, 3));
 
-    
+
     arrangement_creatation(query_curve, radius);
-    
+
 }
 **/
 
@@ -63,15 +62,15 @@ void print_column_set(std::set<std::vector<bool>> set){
 }
 
 void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
-    
+
     Arrangement_2 arr;
-    
+
     std::set<std::vector<bool>> column_set;
-    
+
     // insert all circles which are centered at each point of query_curve.
     CGAL::Exact_rational sqr_r = CGAL::Exact_rational(pow(radius, 2));
     for(unsigned i = 0; i < query_curve.size(); i ++){
-        
+
         Circle_2 circ = Circle_2(Double_Point_2(CGAL::to_double(query_curve[i].x()), CGAL::to_double(query_curve[i].y())), sqr_r, CGAL::CLOCKWISE);
         Curve_2 cv = Curve_2(circ);
         insert(arr, cv);
@@ -86,7 +85,7 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
             Arrangement_2::Ccb_halfedge_const_circulator  circ = fit->outer_ccb();
             Arrangement_2::Ccb_halfedge_const_circulator  curr = circ;
             Arrangement_2::Halfedge_const_handle          he;
-            
+
             face_point_vector.push_back(curr->source()->point());
             do
             {
@@ -94,14 +93,14 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
                 face_point_vector.push_back(he->target()->point());
                 ++curr;
             } while (curr != circ);
-         
+
             // find the point inside the face.
             // 1. find the first and the mid point in the vector.
             Trait_Point_2 left = face_point_vector[0];
             int mid = (face_point_vector.size() - 1)/2;
             Trait_Point_2 right = face_point_vector[mid];
             //std::cout<<mid << "    mid  "<<std::endl;
-            
+
             // 2.
             bool inside = false;
             do{
@@ -127,47 +126,8 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
     print_column_set(column_set);
     // print arrangement.
     // print_arrangement (arr);
-    
+
 }
-
-
-void convert(string filepath) {
-    ifstream myfile (filepath.c_str());
-    vector<Double_Point_2> p;
-
-    if(myfile.is_open())
-    {
-        string header;
-        getline(myfile, header);
-
-        double x, y;
-        int pointIndex, curveIndex;
-        while(myfile >> x >> y >> pointIndex >> curveIndex)
-        {
-            double mapWidth = 600;
-            double mapHeight = 800;
-
-            double x_mapped, y_mapped;
-            double latRad, mercN;
-
-            //get x value
-            //x_mapped = (x+180)*(mapWidth/360);
-            x_mapped = fmod(mapWidth*(x+180)/360, (mapWidth+(mapWidth)/2));
-
-            //convert from degree to radians
-            latRad = y*M_PI/180;
-
-            //get y
-            mercN = log(tan(M_PI/4)+(latRad/2));
-            y_mapped = (mapHeight/2)-(mapWidth*mercN/(2*M_PI));
-
-
-            //cout << x << " " << y << endl;
-            //p.push_back(Double_Point_2(x,y));
-            p.push_back(Double_Point_2(x_mapped, y_mapped));
-        }
-        myfile.close();
-    }
 
     //turn off scientific notation
     cout.setf(ios::fixed, ios::floatfield);
