@@ -18,6 +18,10 @@ vector<vector<bool>> curve::free_space_matrix(const curve& q, double ro) {
     return arr;
 }
 
+std::vector<Double_Point_2> curve::get_curve(){
+    return points;
+}
+
 void curve::print() {
     for (Double_Point_2 p : points) {
         cout << p << "\n";
