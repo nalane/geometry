@@ -179,6 +179,19 @@ void convert(string filepath) {
     }
 }
 
+std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curves){
+    std::vector<std::vector<Trait_Point_2>> result;
+    for(unsigned i = 0; i < curves.size(); i++){
+        std::vector<Double_Point_2> curve = curves[i].get_curve();
+        std::vector<Trait_Point_2> temp;
+        for(unsigned j = 0 ; j < curve.size(); j++){
+            temp.push_back(Trait_Point_2(curve[j].x(), curve[j].y()));
+        }
+        result.push_back(temp);
+    }
+    return result;
+}
+
 vector<curve> get_curves(string filename) {
     // Get the directory from the filename
     string directory = "";
@@ -221,12 +234,12 @@ vector<curve> get_curves(string filename) {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        cerr << "Usage: " << argv[0] << " dataset.txt" << endl;
-        return 1;
+    string datafile = "../data/dataset.txt";
+    if (argc == 2) {
+        datafile = argv[1];
     }
 
-    vector<curve> curves = get_curves(argv[1]);
+    vector<curve> curves = get_curves(datafile);
 
     // Step 1.5: Get query curve
     // Step 2: free space: map<curve, matrix>
