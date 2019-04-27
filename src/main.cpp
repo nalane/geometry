@@ -221,12 +221,12 @@ vector<curve> get_curves(string filename) {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        cerr << "Usage: " << argv[0] << " dataset.txt" << endl;
-        return 1;
+    string datafile = "../data/dataset.txt";
+    if (argc == 2) {
+        datafile = argv[1];
     }
 
-    vector<curve> curves = get_curves(argv[1]);
+    vector<curve> curves = get_curves(datafile);
 
     // Step 1.5: Get query curve
     // Step 2: free space: map<curve, matrix>
