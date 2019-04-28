@@ -103,7 +103,7 @@ std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> quer
         }
         if (index_one == vector_length){
           std::cout<< "big error!!!!!!"<<std::endl;
-          return;
+          return column_set;
         }
                 
       }
