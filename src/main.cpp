@@ -44,7 +44,7 @@ void print_column_set(std::set<std::vector<bool>> set){
     }
 }
 
-void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
+std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
 
   Arrangement_2 arr;
 
@@ -115,9 +115,11 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
     }
   }
     
-    print_column_set(column_set);
-    // print arrangement.
-    // print_arrangement (arr);
+  print_column_set(column_set);
+  // print arrangement.
+  // print_arrangement (arr);
+
+  return column_set;
 }
 
 std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curves){
