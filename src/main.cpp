@@ -172,16 +172,17 @@ map<size_t, curve> get_curves(string filename) {
     return curves;
 }
 
-vector<size_t> filter(set<vector<bool>> column_set, map<size_t, vector<vector<bool>>> matrices) {
-    vector<size_t> curve_ids;
-    return curve_ids;
+bool filter(std::set<std::vector<bool>> column_set_result, vector<vector<bool>> arr) {
+    return false;
 }
 
 int main(int argc, char** argv) {
+    // Default parameters
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
     double frechetDistance = 1.0;
 
+    // Get modified parameters
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (strcmp(argv[i], "-d") == 0)
@@ -193,33 +194,31 @@ int main(int argc, char** argv) {
         }
     }
 
+    // Read the curves in from the files
     map<size_t, curve> curves = get_curves(datafile);
 
-    // Step 1.5: Get query curve
+    // Get query curve
     curve q = curves[queryIndex];
     curves.erase(queryIndex);
 
-    // Step 2: free space: map<curve, matrix>
-    map<size_t, vector<vector<bool>>> matrices;
-    for (auto p : curves) {
-        matrices[p.first] = p.second.free_space_matrix(q, frechetDistance);
-    }
-
-    // Step 3: kernel -> trait_2
+    // kernel -> trait_2
     vector<Trait_Point_2> query_curve_converted =  point_convertor(q);
 
-    // Step 4: get column set
+    // get column set
     set<vector<bool>> column_set_result =
         arrangement_creation(query_curve_converted, frechetDistance);
 
-    // Step 5: Filter
-    vector<size_t> curve_ids = filter(column_set_result, matrices);
-
-    // Step 6: Print result
+    // Print which curves satisfy the filter
     cout << "The folowing curves are within a Frechet distance " <<
         frechetDistance << " of curve " << queryIndex << "\n";
-    for (size_t id : curve_ids) {
-        cout << id << "\n";
+    for (auto p : curves) {
+        // Get the free space matrix of the current curve with the query curve
+        vector<vector<bool>> matrix = p.second.free_space_matrix(q, frechetDistance);
+
+        // Apply filter
+        if (filter(column_set_result, matrix)) {
+            cout << p.first << "\n";
+        }
     }
 
     return 0;
