@@ -44,7 +44,7 @@ void print_column_set(std::set<std::vector<bool>> set){
     }
 }
 
-void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
+std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius){
 
   Arrangement_2 arr;
 
@@ -87,7 +87,7 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
         Trait_Point_2 left = face_point_vector[index_one];
         Trait_Point_2 right = face_point_vector[index_two];
         mid_point = mid_point_creatation(left, right);
-                
+
         CGAL::Arr_point_location_result<Arrangement_2>::Type obj = naive_pl.locate(mid_point);
         Arrangement_2::Face_const_handle* f;
         if (f = boost::get<Arrangement_2::Face_const_handle>(&obj)){
@@ -101,21 +101,23 @@ void arrangement_creation(std::vector<Trait_Point_2> query_curve, double radius)
           index_one += 1;
           index_two = index_one + 1;
         }
-        if (index_one == vector_length){
-          std::cout<< "big error!!!!!!"<<std::endl;
-          return;
-        }
-                
+        //if (index_one == vector_length){
+          //std::cout<< "big error!!!!!!"<<std::endl;
+          //return;
+        //}
+
       }
-            
+
       std::vector<bool> column;
       column = column_creation(query_curve, mid_point, radius);
       column_set.insert(column);
 
     }
   }
-    
+
     print_column_set(column_set);
+
+    return column_set;
     // print arrangement.
     // print_arrangement (arr);
 }
@@ -177,9 +179,12 @@ map<size_t, curve> get_curves(string filename) {
     return curves;
 }
 
+
 int main(int argc, char** argv) {
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
+    vector<curve> queryCurve_to_Convert;
+
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (strcmp(argv[i], "-d") == 0)
@@ -193,6 +198,25 @@ int main(int argc, char** argv) {
 
     // Step 1.5: Get query curve
     curve q = curves[queryIndex];
+
+    queryCurve_to_Convert.push_back(q);
+
+    std::vector<std::vector<Trait_Point_2>> query_curve_converted =  point_convertor(queryCurve_to_Convert);
+
+    //std::set<std::vector<bool>> column_set_result = arrangement_creation(query_curve_converted, 1.0);
+
+    //get the free_space_matrix for the query curve
+    //vector<vector<bool>> arr = q.free_space_matrix(q, 1.0);
+
+    //print out the free_space_matrix
+    //cout << endl;
+    //for (vector<vector<bool>>::size_type i = 0; i < arr.size(); i++){
+      //for (vector<bool>::size_type  j=0; j<arr[i].size(); j++){
+        //cout << arr[i][j] << ' ';
+      //}
+      //cout << endl;
+    //}
+
     curves.erase(queryIndex);
 
     // Step 2: free space: map<curve, matrix>
