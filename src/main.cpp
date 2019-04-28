@@ -92,7 +92,7 @@ std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> quer
         Arrangement_2::Face_const_handle* f;
         if (f = boost::get<Arrangement_2::Face_const_handle>(&obj)){
           if(fit == *f){
-            // std::cout<<"   true  " << std::endl;
+            //std::cout<<"   true  " << std::endl;
             inside = true;
           }
         }
@@ -114,9 +114,7 @@ std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> quer
 
     }
   }
-
     print_column_set(column_set);
-
     return column_set;
     // print arrangement.
     // print_arrangement (arr);
@@ -179,7 +177,6 @@ map<size_t, curve> get_curves(string filename) {
 int main(int argc, char** argv) {
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
-    vector<curve> queryCurve_to_Convert;
 
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
@@ -195,23 +192,15 @@ int main(int argc, char** argv) {
     // Step 1.5: Get query curve
     curve q = curves[queryIndex];
 
-    queryCurve_to_Convert.push_back(q);
+    //convert the query curve to Trait_Point_2
+    std::vector<Trait_Point_2> query_curve_converted =  point_convertor(q);
 
-    std::vector<std::vector<Trait_Point_2>> query_curve_converted =  point_convertor(queryCurve_to_Convert);
-
-    //std::set<std::vector<bool>> column_set_result = arrangement_creation(query_curve_converted, 1.0);
+    //create arrangement
+    std::set<std::vector<bool>> column_set_result = arrangement_creation(query_curve_converted, 10.0);
 
     //get the free_space_matrix for the query curve
-    //vector<vector<bool>> arr = q.free_space_matrix(q, 1.0);
+    //vector<vector<bool>> arr = q.free_space_matrix(q, 10.0);
 
-    //print out the free_space_matrix
-    //cout << endl;
-    //for (vector<vector<bool>>::size_type i = 0; i < arr.size(); i++){
-      //for (vector<bool>::size_type  j=0; j<arr[i].size(); j++){
-        //cout << arr[i][j] << ' ';
-      //}
-      //cout << endl;
-    //}
 
     curves.erase(queryIndex);
 
