@@ -122,17 +122,13 @@ std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> quer
   return column_set;
 }
 
-std::vector<std::vector<Trait_Point_2>> point_convertor(std::vector<curve> curves){
-    std::vector<std::vector<Trait_Point_2>> result;
-    for(unsigned i = 0; i < curves.size(); i++){
-        std::vector<Double_Point_2> curve = curves[i].get_curve();
-        std::vector<Trait_Point_2> temp;
-        for(unsigned j = 0 ; j < curve.size(); j++){
-            temp.push_back(Trait_Point_2(curve[j].x(), curve[j].y()));
-        }
-        result.push_back(temp);
-    }
-    return result;
+std::vector<Trait_Point_2> point_convertor(curve curve){
+  std::vector<Trait_Point_2> result;
+  std::vector<Double_Point_2> points = curve.get_curve();
+  for (unsigned i = 0; i < points.size(); i++){
+    result.push_back(Trait_Point_2(points[i].x(), points[i].y()));
+  }
+  return result;
 }
 
 map<size_t, curve> get_curves(string filename) {
