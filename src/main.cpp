@@ -174,6 +174,26 @@ map<size_t, curve> get_curves(string filename) {
 }
 
 
+bool filter(std::set<std::vector<bool>> column_set_result, vector<vector<bool>> arr){
+  if(column_set_result.size()==0){
+    cout << "empty colum set" << endl;
+    return false;
+  }
+  else{
+    std::set<std::vector<bool>>::iterator i;
+    std::vector<vector<bool>>::iterator j;
+    for(i=column_set_result.begin(), j=arr.begin(); i != column_set_result.end(), j !=arr.end(); ++i, ++j){
+        std::vector<bool> temp1 = *i;
+        std::vector<bool> temp2 = *j;
+        for(unsigned i = 0 ; i < temp1.size(); i++){
+            if(temp1!=temp2){
+              return false;
+            }
+        }
+  }
+  return true;
+  }
+}
 int main(int argc, char** argv) {
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
@@ -199,8 +219,10 @@ int main(int argc, char** argv) {
     std::set<std::vector<bool>> column_set_result = arrangement_creation(query_curve_converted, 10.0);
 
     //get the free_space_matrix for the query curve
-    //vector<vector<bool>> arr = q.free_space_matrix(q, 10.0);
+    vector<vector<bool>> arr = q.free_space_matrix(q, 10.0);
 
+    //filter the query curve
+    filter(column_set_result, arr);
 
     curves.erase(queryIndex);
 
