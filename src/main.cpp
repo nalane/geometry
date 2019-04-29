@@ -143,7 +143,7 @@ vector<Trait_Point_2> point_convertor(curve curve){
     return result;
 }
 
-map<size_t, curve> get_curves(string filename) {
+map<size_t, curve> get_curves(string filename, size_t stride) {
     // Get the directory from the filename
     string directory = "";
     size_t slash_index = filename.rfind('/');
@@ -176,15 +176,17 @@ map<size_t, curve> get_curves(string filename) {
 
             // Get the coordinates in each line
             while (datain >> x >> y >> pointIndex >> curveIndex) {
-                points.push_back(Double_Point_2(x, y));
-                if (x < minX)
-                    minX = x;
-                if (y < minY)
-                    minY = y;
-                if (x > max)
-                    max = x;
-                if (y > max)
-                    max = y;
+                if (pointIndex % stride == 0) {
+                    points.push_back(Double_Point_2(x, y));
+                    if (x < minX)
+                        minX = x;
+                    if (y < minY)
+                        minY = y;
+                    if (x > max)
+                        max = x;
+                    if (y > max)
+                        max = y;
+                }
             }
 
             //cout << points.size();
@@ -224,9 +226,10 @@ bool filter(set<vector<bool>> column_set_result, vector<vector<bool>> arr){
 
 int main(int argc, char** argv) {
     // Default parameters
-    //string datafile = "../data/dataset.txt";
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
+    int stride = 1;
+    int numCurves = 5;
     double frechetDistance = 100.0;
 
     // Get modified parameters
@@ -238,15 +241,23 @@ int main(int argc, char** argv) {
                 queryIndex = atoi(argv[++i]);
             else if (strcmp(argv[i], "-f") == 0)
                 frechetDistance = stod(argv[++i]);
+            else if (strcmp(argv[i], "-s") == 0)
+                stride = atoi(argv[++i]);
+            else if (strcmp(argv[i], "-n") == 0)
+                numCurves = atoi(argv[++i]);
         }
     }
 
     // Read the curves in from the files
-    map<size_t, curve> curves = get_curves(datafile);
+    map<size_t, curve> curves = get_curves(datafile, stride);
 
     // Get query curve
     curve q = curves[queryIndex];
     curves.erase(queryIndex);
+
+    // Limit number of curves
+    map<size_t, curve>::iterator it = curves.upper_bound(numCurves);
+    curves.erase(it, curves.end());
 
     // kernel -> trait_2
     vector<Trait_Point_2> query_curve_converted =  point_convertor(q);
