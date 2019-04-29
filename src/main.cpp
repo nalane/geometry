@@ -205,7 +205,6 @@ map<size_t, curve> get_curves(string filename) {
             CGAL::Exact_rational y = (point.y() - minY) * conversion_factor;
             points.push_back(Double_Point_2(x, y));
         }
-
         c[p.first] = curve(points);
     }
 

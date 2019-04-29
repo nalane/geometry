@@ -15,6 +15,18 @@ vector<vector<bool>> curve::free_space_matrix(const curve& q, double ro) {
             arr[i][j] = CGAL::squared_distance(points[i], q.points[j]) < ro * ro;
         }
     }
+
+    /*
+    cout << "Free space matrix:" << endl;
+    for (int i = 0; i < q.points.size(); i++) {
+        cout << "(";
+        for (int j = 0; j < points.size(); j++) {
+            cout << arr[j][i] << ", ";
+        }
+        cout << ")" << endl;
+    }
+    */
+
     return arr;
 }
 
