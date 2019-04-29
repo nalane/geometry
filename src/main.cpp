@@ -121,10 +121,11 @@ set<vector<bool>> arrangement_creation(vector<Trait_Point_2> query_curve, double
                 }
             }
 
-            vector<bool> column;
-            column = column_creation(query_curve, mid_point, radius);
-            column_set.insert(column);
-
+            if (inside) {
+                vector<bool> column;
+                column = column_creation(query_curve, mid_point, radius);
+                column_set.insert(column);
+            }
         }
     }
     //print_column_set(column_set);
@@ -142,7 +143,7 @@ vector<Trait_Point_2> point_convertor(curve curve){
     return result;
 }
 
-map<size_t, curve> get_curves(string filename, double& ro) {
+map<size_t, curve> get_curves(string filename) {
     // Get the directory from the filename
     string directory = "";
     size_t slash_index = filename.rfind('/');
@@ -212,29 +213,11 @@ map<size_t, curve> get_curves(string filename, double& ro) {
 }
 
 bool filter(set<vector<bool>> column_set_result, vector<vector<bool>> arr){
-    set<vector<bool>>::iterator j;
-    vector<vector<bool>>::iterator i;
-
     //loop through the matrix to make sure that each column is in the set
-    for(i=arr.begin(); i!=arr.end(); i++){
-        // loop through the set looking for *i
-        int match = 0;
-        //loop through the set to look for the column
-        for(j=column_set_result.begin(); j!=column_set_result.end(); j++){
-
-            vector<bool> temp1 = *i;
-            vector<bool> temp2 = *j;
-            //compare two vector
-            if(temp1==temp2){
-                match = 1;
-                //found column, no need check other vector in the set
-                break;
-            }
-        }
-        // Still didn't find a match, then there is no point looking into other column
-        if(match==0){
+    for(vector<bool> column : arr){
+        set<vector<bool>>::iterator it = column_set_result.find(column);
+        if (it == column_set_result.end())
             return false;
-        }
     }
   //we found a match, if none of the for loop iterations failed
   return true;
@@ -245,7 +228,7 @@ int main(int argc, char** argv) {
     //string datafile = "../data/dataset.txt";
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
-    double frechetDistance = 1.0;
+    double frechetDistance = 100.0;
 
     // Get modified parameters
     if (argc > 1) {
@@ -260,12 +243,11 @@ int main(int argc, char** argv) {
     }
 
     // Read the curves in from the files
-    map<size_t, curve> curves = get_curves(datafile, frechetDistance);
+    map<size_t, curve> curves = get_curves(datafile);
 
     // Get query curve
     curve q = curves[queryIndex];
-
-   curves.erase(queryIndex);
+    curves.erase(queryIndex);
 
     // kernel -> trait_2
     vector<Trait_Point_2> query_curve_converted =  point_convertor(q);
