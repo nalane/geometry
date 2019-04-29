@@ -38,7 +38,7 @@ void print_column_set(std::set<std::vector<bool>> set){
     for(std::set<std::vector<bool>>::iterator it = set.begin(); it != set.end(); ++it){
         std::vector<bool> temp = *it;
         for(unsigned i = 0 ; i < temp.size(); i++){
-            std::cout<<temp[i]<<"  ";
+            std::cout<<temp[i]<<"  "<<endl;
         }
         std::cout<<std::endl;
     }
@@ -82,6 +82,7 @@ std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> quer
             int index_one = 0;
             int index_two = 1;
             int vector_length = face_point_vector.size() - 1;
+            cout << vector_length << endl;
             Trait_Point_2 mid_point;
             while(inside == false){
                 Trait_Point_2 left = face_point_vector[index_one];
@@ -97,13 +98,14 @@ std::set<std::vector<bool>> arrangement_creation(std::vector<Trait_Point_2> quer
                     }
                 }
                 index_two += 1;
-                if (index_two = vector_length){
+                if (index_two == vector_length){
                     index_one += 1;
                     index_two = index_one + 1;
                 }
-                if (index_one == vector_length){
-                    std::cout<< "big error!!!!!!"<<std::endl;
-                    return column_set;
+                if (index_one == vector_length - 1){
+                    std::cerr << "No point found in face" << std::endl;
+                    //return column_set;
+                    break;
                 }
             }
 
