@@ -31,8 +31,8 @@ vector<bool> column_creation(vector<Trait_Point_2> query_curve, Trait_Point_2 p,
 Trait_Point_2 mid_point_creation(Trait_Point_2 left, Trait_Point_2 right){
     //cout << "(" << left << " -> " << right << ")\n";
 
-    double x = abs(CGAL::to_double(left.x()) + CGAL::to_double(right.x()));
-    double y = abs(CGAL::to_double(left.y()) + CGAL::to_double(right.y()));
+    double x = CGAL::to_double(left.x()) + CGAL::to_double(right.x());
+    double y = CGAL::to_double(left.y()) + CGAL::to_double(right.y());
 
     Double_Point_2 point(x/2, y/2);
     Trait_Point_2 result(point.x(), point.y());
