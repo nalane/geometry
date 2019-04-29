@@ -213,27 +213,37 @@ map<size_t, curve> get_curves(string filename) {
 }
 
 bool filter(set<vector<bool>> column_set_result, vector<vector<bool>> arr){
-  if(column_set_result.size()==0){
-    //cout << "empty colum set" << endl;
-    return false;
-  }
-  else{
-    set<vector<bool>>::iterator i;
-    vector<vector<bool>>::iterator j;
-    for(i=column_set_result.begin(), j=arr.begin(); i != column_set_result.end(), j !=arr.end(); ++i, ++j){
-        vector<bool> temp1 = *i;
-        vector<bool> temp2 = *j;
-        for(unsigned i = 0 ; i < temp1.size(); i++){
+    set<vector<bool>>::iterator j;
+    vector<vector<bool>>::iterator i;
+
+    //loop through the matrix to make sure that each column is in the set
+    for(i=arr.begin(); i!=arr.end(); i++){
+        // loop through the set looking for *i
+        int match = 0;
+        //loop through the set to look for the column
+        for(j=column_set_result.begin(); j!=column_set_result.end(); j++){
+
+            vector<bool> temp1 = *i;
+            vector<bool> temp2 = *j;
+            //compare two vector
             if(temp1==temp2){
-              return true;
+                match = 1;
+                //found column, no need check other vector in the set
+                break;
             }
         }
-  }
-  return false;
-  }
+        // Still didn't find a match, then there is no point looking into other column
+        if(match==0){
+            return false;
+        }
+    }
+  //we found a match, if none of the for loop iterations failed
+  return true;
 }
+
 int main(int argc, char** argv) {
     // Default parameters
+    //string datafile = "../data/dataset.txt";
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
     double frechetDistance = 1.0;
@@ -255,7 +265,8 @@ int main(int argc, char** argv) {
 
     // Get query curve
     curve q = curves[queryIndex];
-    curves.erase(queryIndex);
+
+   curves.erase(queryIndex);
 
     // kernel -> trait_2
     vector<Trait_Point_2> query_curve_converted =  point_convertor(q);
