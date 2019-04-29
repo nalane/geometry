@@ -184,12 +184,12 @@ bool filter(std::set<std::vector<bool>> column_set_result, vector<vector<bool>> 
         std::vector<bool> temp1 = *i;
         std::vector<bool> temp2 = *j;
         for(unsigned i = 0 ; i < temp1.size(); i++){
-            if(temp1!=temp2){
-              return false;
+            if(temp1==temp2){
+              return true;
             }
         }
   }
-  return true;
+  return false;
   }
 }
 int main(int argc, char** argv) {
@@ -236,7 +236,7 @@ int main(int argc, char** argv) {
             cout << p.first << "\n";
         }
         else{
-          cout << "None" << endl;
+          cout << "Not valid" << endl;
         }
     }
 
