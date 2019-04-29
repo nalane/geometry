@@ -12,8 +12,7 @@
 
 using namespace std;
 
-const double WIDTH = 100;
-const double HEIGHT = 100;
+const double DIM = 100;
 
 vector<bool> column_creation(vector<Trait_Point_2> query_curve, Trait_Point_2 p, double radius){
     vector<bool> column;
@@ -143,7 +142,7 @@ vector<Trait_Point_2> point_convertor(curve curve){
     return result;
 }
 
-map<size_t, curve> get_curves(string filename) {
+map<size_t, curve> get_curves(string filename, double& ro) {
     // Get the directory from the filename
     string directory = "";
     size_t slash_index = filename.rfind('/');
@@ -155,8 +154,7 @@ map<size_t, curve> get_curves(string filename) {
 
     double minX = DBL_MAX;
     double minY = DBL_MAX;
-    double maxX = -DBL_MAX;
-    double maxY = -DBL_MAX;
+    double max = -DBL_MAX;
 
     ifstream dataset(filename.c_str());
     if (dataset.is_open()) {
@@ -182,10 +180,10 @@ map<size_t, curve> get_curves(string filename) {
                     minX = x;
                 if (y < minY)
                     minY = y;
-                if (x > maxX)
-                    maxX = x;
-                if (y > maxY)
-                    maxY = y;
+                if (x > max)
+                    max = x;
+                if (y > max)
+                    max = y;
             }
 
             //cout << points.size();
@@ -197,12 +195,13 @@ map<size_t, curve> get_curves(string filename) {
 
     dataset.close();
 
+    double conversion_factor = DIM / max;
     map<size_t, curve> c;
     for (auto p : curves) {
         vector<Double_Point_2> points;
         for (Double_Point_2 point : p.second) {
-            CGAL::Exact_rational x = (point.x() - minX) * WIDTH / maxX;
-            CGAL::Exact_rational y = (point.y() - minY) * HEIGHT / maxY;
+            CGAL::Exact_rational x = (point.x() - minX) * conversion_factor;
+            CGAL::Exact_rational y = (point.y() - minY) * conversion_factor;
             points.push_back(Double_Point_2(x, y));
         }
 
@@ -261,7 +260,7 @@ int main(int argc, char** argv) {
     }
 
     // Read the curves in from the files
-    map<size_t, curve> curves = get_curves(datafile);
+    map<size_t, curve> curves = get_curves(datafile, frechetDistance);
 
     // Get query curve
     curve q = curves[queryIndex];
