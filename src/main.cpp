@@ -155,7 +155,8 @@ map<size_t, curve> get_curves(string filename, size_t stride) {
 
     double minX = DBL_MAX;
     double minY = DBL_MAX;
-    double max = -DBL_MAX;
+    double maxX = -DBL_MAX;
+    double maxY = -DBL_MAX;
 
     ifstream dataset(filename.c_str());
     if (dataset.is_open()) {
@@ -182,10 +183,10 @@ map<size_t, curve> get_curves(string filename, size_t stride) {
                         minX = x;
                     if (y < minY)
                         minY = y;
-                    if (x > max)
-                        max = x;
-                    if (y > max)
-                        max = y;
+                    if (x > maxX)
+                        maxX = x;
+                    if (y > maxY)
+                        maxY = y;
                 }
             }
 
@@ -197,6 +198,10 @@ map<size_t, curve> get_curves(string filename, size_t stride) {
     }
 
     dataset.close();
+
+    maxX -= minX;
+    maxY -= minY;
+    double max = maxX > maxY ? maxX : maxY;
 
     double conversion_factor = DIM / max;
     map<size_t, curve> c;
@@ -229,7 +234,7 @@ int main(int argc, char** argv) {
     string datafile = "../data/dataset.txt";
     int queryIndex = 0;
     int stride = 1;
-    int numCurves = 5;
+    int numCurves = -1;
     double frechetDistance = 100.0;
 
     // Get modified parameters
@@ -256,8 +261,10 @@ int main(int argc, char** argv) {
     curves.erase(queryIndex);
 
     // Limit number of curves
-    map<size_t, curve>::iterator it = curves.upper_bound(numCurves);
-    curves.erase(it, curves.end());
+    if (numCurves > 0) {
+        map<size_t, curve>::iterator it = curves.upper_bound(numCurves);
+        curves.erase(it, curves.end());
+    }
 
     // kernel -> trait_2
     vector<Trait_Point_2> query_curve_converted =  point_convertor(q);
